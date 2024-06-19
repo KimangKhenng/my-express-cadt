@@ -1,4 +1,4 @@
-const { users } = require('../db/db.js')
+const User = require('../models/user')
 
 const getUser = (req, res) => {
     // If string in userId
@@ -22,4 +22,14 @@ const deleteUserById = (req, res)=>{
     users.pop(user)
     return res.json(user)
 }
-module.exports = { getUser, getUsers, deleteUserById }
+const createUser = async (req, res)=>{
+    const {name, age, email} = req.body
+    const user = new User({
+        name: name,
+        age: age,
+        email: email
+    })
+    const result = await user.save()
+    return res.json(user)
+}
+module.exports = { getUser, getUsers, deleteUserById, createUser }

@@ -10,7 +10,13 @@ const cert = fs.readFileSync("localhost.pem", "utf-8");
 const userRoute = require('./routes/user.js')
 const bookRouter = require('./routes/book.js')
 
+//DB Connect
+const dbConnect = require('./db/db.js')
+
 const { errorHandle, logger } = require('./middlewares/index.js')
+
+dbConnect()
+
 app.use(parser.json())
 app.use(logger)
 app.use('/users', userRoute)

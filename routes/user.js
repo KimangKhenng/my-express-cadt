@@ -1,9 +1,8 @@
 const express = require('express')
 const { getUser, getUsers,deleteUserById, createUser } = require('../controllers/users')
-const { idValidator } = require('../middlewares')
 const router = express.Router()
 
-router.get('/:id', idValidator, getUser)
+router.get('/:id', getUser)
 
 router.get('/', getUsers)
 

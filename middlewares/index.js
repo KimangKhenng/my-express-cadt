@@ -4,8 +4,8 @@ const logger = (req, res, next) => {
 };
 
 const errorHandle = (err, req, res, next) => {
-    //console.error("Error server: ", err.stack)
-    return res.status(500).send(err.message)
+    // console.error("Error server: ", err.stack)
+    return res.status(500).json({message: err.message})
 }
 
 const idValidator = (req, res, next) => {

@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 // Define a schema
 const userSchema = new mongoose.Schema({
-    name: String,
+    name: {required: true, type: String},
     age: Number,
-    email: String
+    email: {type: String, unique: true},
+    tweets: [{type: mongoose.Types.ObjectId, ref: 'Tweet'}]
   })
   // Create a model
   const User = mongoose.model('User', userSchema)

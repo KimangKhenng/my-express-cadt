@@ -23,4 +23,17 @@ const getBooks = (req, res) => {
     return res.json(filterBooks)
 }
 
-module.exports = { getBook, getBooks }
+const createBook = (req, res)=>{
+    const {title, author, page} = req.body
+    const book = {
+        id: Math.floor(Math.random() * 100),
+        title,
+        author,
+        page
+    }
+    books.push(book)
+    return res.json(book)
+}
+// ES5 module.exports, require, babel
+// ES6 export default, import
+module.exports = { getBook, getBooks, createBook }

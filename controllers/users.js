@@ -11,9 +11,15 @@ const getUser = (req, res) => {
     }
     res.json(user)
 }
-
 const getUsers = (req, res) => {
     return res.json({ users })
 }
-
-module.exports = { getUser, getUsers }
+const deleteUserById = (req, res)=>{
+    const id = req.params.id
+    const user = users.find( (user) =>{
+        return user.id == id
+    })
+    users.pop(user)
+    return res.json(user)
+}
+module.exports = { getUser, getUsers, deleteUserById }

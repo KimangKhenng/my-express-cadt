@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-
+const { validationResult } = require('express-validator')
 const logger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next(); // Call the next middleware function
@@ -8,6 +8,16 @@ const logger = (req, res, next) => {
 const errorHandle = (err, req, res, next) => {
     // console.error("Error server: ", err.stack)
     return res.status(500).json({ message: err.message })
+}
+
+const handleValidation = (req, res, next) => {
+    const result = validationResult(req)
+    if (result.isEmpty()) {
+        next()
+    } else {
+        return res.status(401).json({ error: result.array() })
+    }
+
 }
 
 const idValidator = (req, res, next) => {
@@ -30,4 +40,4 @@ const verifyToken = (req, res, next) => {
     next()
 }
 
-module.exports = { logger, idValidator, errorHandle, verifyToken }
+module.exports = { logger, idValidator, errorHandle, verifyToken, handleValidation }

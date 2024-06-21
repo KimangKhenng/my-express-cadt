@@ -3,7 +3,7 @@ const { getBook, getBooks, createBook } = require('../controllers/books')
 const { idValidator } = require('../middlewares')
 const bookRouter = express.Router()
 
-bookRouter.get('/:id', idValidator, getBook)
+bookRouter.get('/:id', getBook)
 bookRouter.get('/', getBooks)
 bookRouter.post('/', createBook)
 

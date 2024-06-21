@@ -9,6 +9,8 @@ const getBook = asyncHandler(async (req, res) => {
 })
 
 const getBooks = async (req, res) => {
+    // req.user
+    // req.users.roles
     const books = await Book.find()
     return res.json({ books })
 }

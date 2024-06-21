@@ -3,6 +3,8 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 
+const { validationResult } = require('express-validator');
+
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     const user = await User.findOne({ email: email })

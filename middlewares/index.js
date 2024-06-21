@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken")
+
 const logger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next(); // Call the next middleware function
@@ -16,4 +18,16 @@ const idValidator = (req, res, next) => {
     throw Error(`Id: ${id} contains string`)
 }
 
-module.exports = { logger, idValidator, errorHandle }
+const verifyToken = (req, res, next) => {
+    // Extract token from request header from clinet
+    let token = req.header("Authorization")
+    if (!token) {
+        return res.status(401).json({ error: "Access denied!" })
+    }
+    token = token.replace("Bearer ", "")
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = decoded
+    next()
+}
+
+module.exports = { logger, idValidator, errorHandle, verifyToken }

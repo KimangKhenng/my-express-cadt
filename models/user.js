@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
   name: { required: true, type: String },
   age: Number,
   email: { type: String, unique: true },
-  tweets: [{ type: mongoose.Types.ObjectId, ref: 'Tweet' }]
+  tweets: [{ type: mongoose.Types.ObjectId, ref: 'Tweet' }],
+  password: { required: true, type: String }
 })
 // Create a model
 const User = mongoose.model('User', userSchema)

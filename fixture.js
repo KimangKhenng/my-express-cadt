@@ -3,11 +3,12 @@ const Book = require("./models/book");
 const Tweet = require("./models/tweet");
 const User = require("./models/user");
 const { faker } = require('@faker-js/faker')
+const bcrypt = require("bcrypt")
 dbConnect().catch((err) => { console.log(err) })
 
-const numUser = 1000
-const numTweet = 10000
-const numBooks = 200
+const numUser = 100
+const numTweet = 1000
+const numBooks = 20
 // Generate fake data
 // faker.js
 
@@ -17,7 +18,8 @@ async function generate() {
         const user = new User({
             name: faker.internet.userName(),
             age: faker.number.int({ max: 100 }),
-            email: faker.internet.email()
+            email: faker.internet.email(),
+            password: await bcrypt.hash("12345678", 10)
         })
         const reuslt = await user.save()
         userList.push(reuslt._id)

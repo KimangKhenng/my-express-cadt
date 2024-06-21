@@ -1,4 +1,5 @@
 const express = require('express')
+require('dotenv').config();
 const app = express()
 const https = require("https");
 const fs = require('fs')
@@ -13,16 +14,18 @@ const bookRouter = require('./routes/book.js')
 //DB Connect
 const dbConnect = require('./db/db.js')
 
-const { errorHandle, logger } = require('./middlewares/index.js');
+const { errorHandle, logger, verifyToken } = require('./middlewares/index.js');
 const tweetRouter = require('./routes/tweet.js');
+const authRouter = require('./routes/auth.js');
 
-dbConnect().catch((err)=> {console.log(err)})
+dbConnect().catch((err) => { console.log(err) })
 
 app.use(parser.json())
 app.use(logger)
-app.use('/users', userRoute)
-app.use('/books', bookRouter)
-app.use('/tweets', tweetRouter)
+app.use('/auth', authRouter)
+app.use('/users', verifyToken, userRoute)
+app.use('/books', verifyToken, bookRouter)
+app.use('/tweets', verifyToken, tweetRouter)
 app.use(errorHandle)
 
 const server = https.createServer({ key, cert }, app);

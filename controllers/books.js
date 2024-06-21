@@ -1,30 +1,20 @@
 const { books } = require('../db/db.js')
+const Book = require('../models/book.js')
+const asyncHandler = require("express-async-handler")
 
-const getBook = (req, res) => {
+const getBook = asyncHandler(async (req, res) => {
     const bookId = req.params.id
-    const book = books.find((book) => {
-        return book.id == bookId
-    })
-    if (!book) {
-        res.json({ "book": {} })
-    }
+    const book = await Book.findById(id)
     res.json(book)
+})
+
+const getBooks = async (req, res) => {
+    const books = await Book.find()
+    return res.json({ books })
 }
 
-const getBooks = (req, res) => {
-    // Check empty object
-    if (Object.keys(req.query).length === 0) {
-        return res.json(books)
-    }
-    const page = req.query.page
-    const filterBooks = books.filter((book) => {
-        return book.page == page
-    })
-    return res.json(filterBooks)
-}
-
-const createBook = (req, res)=>{
-    const {title, author, page} = req.body
+const createBook = (req, res) => {
+    const { title, author, page } = req.body
     const book = {
         id: Math.floor(Math.random() * 100),
         title,

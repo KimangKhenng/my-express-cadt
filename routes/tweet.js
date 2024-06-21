@@ -1,7 +1,8 @@
 const express = require('express')
-const { createTweet } = require('../controllers/tweet')
+const { createTweet, getTweetByID } = require('../controllers/tweet')
 const tweetRouter = express.Router()
 
 tweetRouter.post('/', createTweet)
+tweetRouter.get('/:id', getTweetByID)
 
 module.exports = tweetRouter

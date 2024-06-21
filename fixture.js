@@ -1,4 +1,5 @@
 const dbConnect = require("./db/db");
+const Book = require("./models/book");
 const Tweet = require("./models/tweet");
 const User = require("./models/user");
 const { faker } = require('@faker-js/faker')
@@ -6,6 +7,7 @@ dbConnect().catch((err) => { console.log(err) })
 
 const numUser = 1000
 const numTweet = 10000
+const numBooks = 200
 // Generate fake data
 // faker.js
 
@@ -30,6 +32,20 @@ async function generate() {
         })
         const reuslt = await tweet.save()
         console.log(`Tweet: ${reuslt._id} generated!`)
+    }
+
+    for (let i = 0; i < numBooks; i++) {
+        const randomId = userList[Math.floor(Math.random() * userList.length)]
+        const random2 = userList[Math.floor(Math.random() * userList.length)]
+        const book = new Book({
+            page: faker.number.int(),
+            title: `How to be ${faker.person.jobTitle()}`,
+            description: faker.lorem.sentence(),
+            genre: faker.music.genre(),
+            authors: [randomId, random2]
+        })
+        const reuslt = await book.save()
+        console.log(`Book: ${reuslt._id} generated!`)
     }
 
     const tweets = await Tweet.find()

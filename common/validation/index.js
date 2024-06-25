@@ -9,9 +9,9 @@ const loginSchema = checkSchema({
         isLength: {
             options: {
                 min: 5
-            }
+            },
+            errorMessage: 'Password must be at least 5 letters'
         },
-        errorMessage: 'Password must be at least 5 letters',
     },
 })
 

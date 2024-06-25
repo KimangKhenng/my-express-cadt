@@ -17,7 +17,6 @@ const handleValidation = (req, res, next) => {
     } else {
         return res.status(401).json({ error: result.array() })
     }
-
 }
 
 const idValidator = (req, res, next) => {

@@ -4,7 +4,7 @@ const { handleValidation } = require('../middlewares')
 const { loginSchema } = require('../common/validation')
 const authRouter = express.Router()
 
-authRouter.post('/login', loginSchema, handleValidation, loginUser)
+authRouter.post('/login', loginSchema, loginUser)
 authRouter.post('/sign-up', signupUser)
 
 module.exports = authRouter

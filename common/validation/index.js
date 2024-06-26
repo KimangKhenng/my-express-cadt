@@ -1,4 +1,5 @@
 const { checkSchema } = require('express-validator');
+const User = require('../../models/user');
 
 const loginSchema = checkSchema({
     email: {
@@ -21,7 +22,7 @@ const createUserSchema = checkSchema({
         isAlpha: {
             locale: 'en-US'
         },
-        // errorMessage: "Name must be alphabet only"
+        errorMessage: "Name must be alphabet only"
     },
     // Username(letter, number, alphanumeric)
     username: {
@@ -44,7 +45,16 @@ const createUserSchema = checkSchema({
     },
     // must be email
     email: {
-        isEmail: true
+        isEmail: true,
+        // Check if email already registered
+        custom: {
+            options: async (value) => {
+                const user = await User.findOne({ email: value })
+                if (user) {
+                    throw new Error(`User with email: ${value} already existed`)
+                }
+            }
+        }
     },
     // Must be URL
     facebookURL: {

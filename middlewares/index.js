@@ -7,7 +7,6 @@ const logger = (req, res, next) => {
 
 const errorHandle = (err, req, res, next) => {
     // console.error("Error server: ", err.stack)
-    console.log(err)
     return res.status(500).json({ message: err.message })
 }
 

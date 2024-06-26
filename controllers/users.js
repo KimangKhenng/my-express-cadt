@@ -13,7 +13,7 @@ const getUsers = asyncHandler(async (req, res) => {
     // Get all by using find method
     // All user with age greater than 20
     // $gt = greater than
-    const users = await User.find({ age: { $gt: 20 } })
+    const users = await User.find().sort({ 'createdDate': 'desc' })
     return res.json(users)
 })
 const deleteUserById = asyncHandler(async (req, res) => {

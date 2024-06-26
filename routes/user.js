@@ -18,6 +18,10 @@ userRouter.delete('/:id', deleteUserById)
 userRouter.post('/', createUser)
 userRouter.get('/:id/tweets', getTweetsByUserId)
 userRouter.get('/:id/books', getBooksbyUserId)
-userRouter.put('/:id', updateUserSchema, handleValidation, updateUserById)
+userRouter.put('/:id',
+    updateUserSchema,
+    handleValidation,
+    updateUserById
+)
 
 module.exports = userRouter

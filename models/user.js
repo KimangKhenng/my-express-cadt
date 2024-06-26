@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 // Define a schema
+
 const userSchema = new mongoose.Schema({
   name: { required: true, type: String },
   //  Integer
@@ -7,11 +8,17 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   tweets: [{ type: mongoose.Types.ObjectId, ref: 'Tweet' }],
   // At least 8 password, Capital, smallcase, Number
-  password: { required: true, type: String },
+  password: { type: String },
+  userType: {
+    type: String,
+    enum: ["sso", "normal"],
+    default: 'normal'
+  },
   // URL for Facebook
   facebookURL: { type: String },
   // Username(letter, number, alphanumeric)
-  username: { type: String }
+  username: { type: String },
+  createdDate: { type: Date, default: Date.now() }
 })
 // Create a model
 const User = mongoose.model('User', userSchema)

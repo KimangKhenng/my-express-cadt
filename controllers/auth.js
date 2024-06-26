@@ -28,11 +28,17 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const signupUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const {
+        username,
+        name,
+        age,
+        email,
+        password,
+        facebookURL } = req.body;
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user
-    const user = new User({ name, email, password: hashedPassword });
+    const user = new User({ username, age, name, email, facebookURL, password: hashedPassword });
     const result = await user.save();
     res.status(201).json({ message: 'User created successfully' });
 })

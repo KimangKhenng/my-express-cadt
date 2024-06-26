@@ -22,7 +22,13 @@ const deleteUserById = asyncHandler(async (req, res) => {
     return res.json(reuslt)
 })
 const createUser = asyncHandler(async (req, res, next) => {
-    const { name, age, email } = req.body
+    const {
+        username,
+        name,
+        age,
+        email,
+        password,
+        facebookURL } = req.body
     const user = new User({
         name: name,
         age: age,

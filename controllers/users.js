@@ -63,4 +63,20 @@ const getBooksbyUserId = asyncHandler(async (req, res) => {
     })
     return res.json({ books })
 })
-module.exports = { getUser, getUsers, deleteUserById, createUser, getTweetsByUserId, getBooksbyUserId }
+
+const updateUserById = asyncHandler(async (req, res, next) => {
+    const id = req.params.id
+    const { password, confirmedPassword, ...self } = req.body
+    const result = await User.updateOne({ ...self, id })
+    const user = await User.findById(id)
+    return res.json({ result, user })
+})
+module.exports = {
+    getUser,
+    getUsers,
+    deleteUserById,
+    createUser,
+    getTweetsByUserId,
+    getBooksbyUserId,
+    updateUserById
+}

@@ -82,4 +82,79 @@ const createUserSchema = checkSchema({
     }
 })
 
-module.exports = { loginSchema, createUserSchema }
+const updateUserSchema = checkSchema({
+    // No number allowed, Only small and capital, only English
+    name: {
+        optional: {
+            options: {
+                nullable: true
+            }
+        },
+        isAlpha: {
+            locale: 'en-US',
+            errorMessage: "Name must be alphabet only"
+        },
+    },
+    // Username(letter, number, alphanumeric)
+    username: {
+        optional: {
+            options: {
+                nullable: true
+            }
+        },
+        isAlphanumeric: {
+            locale: 'en-US'
+        },
+        isLength: {
+            options: {
+                max: 15,
+                min: 6
+            }
+        }
+    },
+    // must be int, min 1 max 150
+    age: {
+        optional: {
+            options: {
+                nullable: true
+            }
+        },
+        isInt: {
+            options: { min: 1, max: 150 },
+            errorMessage: 'Age must be between 1 and 150',
+        },
+    },
+    // must be email
+    email: {
+        optional: {
+            options: {
+                nullable: true
+            }
+        },
+        isEmail: true,
+        // Check if email already registered
+        custom: {
+            options: async (value) => {
+                const user = await User.findOne({ email: value })
+                if (user) {
+                    throw new Error(`User with email: ${value} already existed`)
+                }
+            }
+        }
+    },
+    // Must be URL
+    facebookURL: {
+        optional: {
+            options: {
+                nullable: true
+            }
+        },
+        isURL: true
+    },
+})
+
+module.exports = {
+    loginSchema,
+    createUserSchema,
+    updateUserSchema
+}

@@ -26,6 +26,7 @@ const authRouter = require('./routes/auth.js');
 // Passport
 const passport = require('passport');
 const jwtStrategy = require('./common/strategies/jwt-strategy.js');
+const { getGenreCount } = require('./controllers/books.js');
 passport.use(jwtStrategy)
 
 app.use(parser.json())
@@ -40,6 +41,8 @@ app.use('/books',
 app.use('/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)
+
+app.get('/books-genres', getGenreCount)
 app.use(errorHandle)
 
 const server = https.createServer({ key, cert }, app);

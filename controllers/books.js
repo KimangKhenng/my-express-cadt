@@ -11,7 +11,7 @@ const getBook = asyncHandler(async (req, res) => {
 const getBooks = async (req, res) => {
     // req.user
     // req.users.roles
-    const books = await Book.find()
+    const books = await Book.aggregate().unwind('authors')
     return res.json({ books })
 }
 
@@ -26,6 +26,11 @@ const createBook = (req, res) => {
     books.push(book)
     return res.json(book)
 }
+
+const getGenreCount = asyncHandler(async (req, res) => {
+    const reuslt = await Book.aggregate().group({ _id: "$genre", count: { $sum: 1 } })
+    return res.json(reuslt)
+})
 // ES5 module.exports, require, babel
 // ES6 export default, import
-module.exports = { getBook, getBooks, createBook }
+module.exports = { getBook, getBooks, createBook, getGenreCount }

@@ -8,7 +8,7 @@ dbConnect().catch((err) => { console.log(err) })
 
 const numUser = 10
 const numTweet = 1000
-const numBooks = 20
+const numBooks = 1000
 // Generate fake data
 // faker.js
 

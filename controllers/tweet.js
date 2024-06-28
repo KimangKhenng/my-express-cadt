@@ -20,4 +20,20 @@ const getTweetByID = asyncHandler(async (req, res) => {
     const tweet = await Tweet.findById(id)
     return res.json({ tweet })
 })
-module.exports = { createTweet, getTweetByID }
+
+const getTweets = asyncHandler(async (req, res) => {
+    const tweet = await Tweet.find()
+    return res.json({ tweet })
+})
+
+const deleteTweetById = asyncHandler(async (req, res) => {
+    const id = req.params.id
+    const result = await Tweet.deleteOne({ _id: id })
+    return res.json(result)
+})
+module.exports = {
+    createTweet,
+    getTweetByID,
+    deleteTweetById,
+    getTweets
+}

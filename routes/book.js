@@ -1,10 +1,10 @@
 const express = require('express')
 const { getBook, getBooks, createBook } = require('../controllers/books')
-const { idValidator } = require('../middlewares')
+const { authroize } = require('../middlewares')
 const bookRouter = express.Router()
 
-bookRouter.get('/:id', getBook)
-bookRouter.get('/', getBooks)
-bookRouter.post('/', createBook)
+bookRouter.get('/:id', authroize('read_record'), getBook)
+bookRouter.get('/', authroize('read_record'), getBooks)
+bookRouter.post('/', authroize('create_record'), createBook)
 
 module.exports = bookRouter

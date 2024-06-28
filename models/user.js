@@ -14,6 +14,12 @@ const userSchema = new mongoose.Schema({
     enum: ["sso", "normal"],
     default: 'normal'
   },
+  role: {
+    type: String,
+    required: true,
+    enum: ["admin", "editor", "user"],
+    default: 'user'
+  },
   // URL for Facebook
   facebookURL: { type: String },
   // Username(letter, number, alphanumeric)

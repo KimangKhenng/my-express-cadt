@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken")
-const { validationResult } = require('express-validator')
+const { validationResult } = require('express-validator');
+const { getPermissionsByRoleName } = require("../roles/role");
+const Tweet = require("../models/tweet");
+const Book = require("../models/book");
 const logger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next(); // Call the next middleware function
@@ -39,4 +42,49 @@ const verifyToken = (req, res, next) => {
     next()
 }
 
-module.exports = { logger, idValidator, errorHandle, verifyToken, handleValidation }
+const authroize = (permission) => {
+    return (req, res, next) => {
+        const user = req.user
+        if (!user) {
+            return res.status(401).json({ error: "Access denied!" })
+        }
+        const permissions = getPermissionsByRoleName(user.role)
+        if (permissions.includes(permission)) {
+            req.permission = permission
+            next()
+        } else {
+            return res.status(403).json({ error: "Forbidden" })
+        }
+    }
+}
+
+const resourceControl = (resource) => {
+    return async (req, res, next) => {
+        const deletedId = req.params.id
+        const userId = req.user.id
+        // const permission = req.locals.permission
+        if (req.user.role == 'admin') {
+            next()
+        }
+        if (req.permission == 'delete_own_record') {
+            if (resource == 'tweets') {
+                const tweet = await Tweet.findOne({ _id: deletedId, byUser: userId })
+                if (tweet) {
+                    next()
+                } else {
+                    return res.status(403).json({ error: "Forbidden" })
+                }
+            }
+        }
+    }
+}
+
+module.exports = {
+    logger,
+    idValidator,
+    errorHandle,
+    verifyToken,
+    handleValidation,
+    authroize,
+    resourceControl
+}

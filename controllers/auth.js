@@ -17,9 +17,10 @@ const loginUser = asyncHandler(async (req, res) => {
     if (!passwordMatch) {
         return res.json({ message: "Email or password is incorrect!" })
     }
+    user.tweets = {}
     // Sign JWT 
     const token = signJWT(user._id, user.email)
-    return res.json(token)
+    return res.json({ user, token })
 })
 
 const signupUser = asyncHandler(async (req, res) => {

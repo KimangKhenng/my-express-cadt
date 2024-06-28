@@ -9,16 +9,17 @@ const {
     updateUserById
 } = require('../controllers/users')
 const { createUserSchema, updateUserSchema } = require('../common/validation')
-const { handleValidation } = require('../middlewares')
+const { handleValidation, authroize } = require('../middlewares')
 const userRouter = express.Router()
 
-userRouter.get('/:id', getUser)
-userRouter.get('/', getUsers)
-userRouter.delete('/:id', deleteUserById)
-userRouter.post('/', createUser)
-userRouter.get('/:id/tweets', getTweetsByUserId)
-userRouter.get('/:id/books', getBooksbyUserId)
+userRouter.get('/:id', authroize('read_record'), getUser)
+userRouter.get('/', authroize('read_record'), getUsers)
+userRouter.delete('/:id', authroize('delete_record'), deleteUserById)
+userRouter.post('/', authroize('create_record'), createUser)
+userRouter.get('/:id/tweets', authroize('read_record'), getTweetsByUserId)
+userRouter.get('/:id/books', authroize('read_record'), getBooksbyUserId)
 userRouter.put('/:id',
+    authroize('update_record'),
     updateUserSchema,
     handleValidation,
     updateUserById

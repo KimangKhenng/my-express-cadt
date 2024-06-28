@@ -14,5 +14,6 @@ const jwtStrategy = new Strategy(opt, async (jwt_payload, done) => {
         done(null, false)
     }
     done(null, user)
+    // req.user
 })
 module.exports = jwtStrategy

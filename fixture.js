@@ -6,7 +6,7 @@ const { faker } = require('@faker-js/faker')
 const bcrypt = require("bcrypt")
 dbConnect().catch((err) => { console.log(err) })
 
-const numUser = 100
+const numUser = 10
 const numTweet = 1000
 const numBooks = 20
 // Generate fake data
@@ -19,7 +19,9 @@ async function generate() {
             name: faker.internet.userName(),
             age: faker.number.int({ max: 100 }),
             email: faker.internet.email(),
-            password: await bcrypt.hash("12345678", 10)
+            password: await bcrypt.hash("12345678", 10),
+            facebookURL: faker.internet.url(),
+            username: faker.internet.userName(),
         })
         const reuslt = await user.save()
         userList.push(reuslt._id)

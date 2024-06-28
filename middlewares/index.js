@@ -66,7 +66,7 @@ const resourceControl = (resource) => {
         if (req.user.role == 'admin') {
             next()
         }
-        if (req.permission == 'delete_own_record') {
+        if (req.permission == 'delete_own_record' || req.permission == 'update_own_record') {
             if (resource == 'tweets') {
                 const tweet = await Tweet.findOne({ _id: deletedId, byUser: userId })
                 if (tweet) {
@@ -74,6 +74,9 @@ const resourceControl = (resource) => {
                 } else {
                     return res.status(403).json({ error: "Forbidden" })
                 }
+            }
+            if (resource == 'books') {
+                //Different logics
             }
         }
     }

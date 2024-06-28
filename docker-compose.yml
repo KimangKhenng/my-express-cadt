@@ -1,0 +1,15 @@
+version: '2'
+services:
+  express-cadt:
+    build: .
+    container_name: express-cadt
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"

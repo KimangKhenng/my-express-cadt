@@ -8,8 +8,9 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - ./uploads:/app/uploads
   mongodb:
-    image: mongo:latest
+    image: mongo:7.0.12
     container_name: mongodb
     ports:
       - "27017:27017"

@@ -3,7 +3,8 @@ const { getBook, getBooks, createBook, getGenreCount } = require('../controllers
 const { authroize } = require('../middlewares')
 const bookRouter = express.Router()
 
-bookRouter.get('/:id', authroize('read_record'), getBook)
+bookRouter.get('/genre', getGenreCount)
+bookRouter.get('/:id', getBook)
 bookRouter.get('/', getBooks)
 bookRouter.post('/', authroize('create_record'), createBook)
 

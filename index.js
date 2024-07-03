@@ -6,7 +6,7 @@ const https = require("https");
 const fs = require('fs')
 const parser = require('body-parser')
 
-//Certificates
+//Certificate
 const key = fs.readFileSync("localhost-key.pem", "utf-8");
 const cert = fs.readFileSync("localhost.pem", "utf-8");
 
@@ -26,7 +26,8 @@ const authRouter = require('./routes/auth.js');
 // Passport
 const passport = require('passport');
 const jwtStrategy = require('./common/strategies/jwt-strategy.js');
-const { getGenreCount } = require('./controllers/books.js');
+const { upload } = require('./middlewares/upload.js');
+const File = require('./models/file.js');
 passport.use(jwtStrategy)
 
 app.use(parser.json())
@@ -36,14 +37,33 @@ app.use('/users',
     passport.authenticate('jwt', { session: false }),
     userRoute)
 app.use('/books',
-    passport.authenticate('jwt', { session: false }),
     bookRouter)
 app.use('/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)
 
-app.get('/books-genres', getGenreCount)
+app.post('/uploads', upload, async (req, res) => {
+    console.log(req.file)
+    if (req.file == undefined) {
+        throw new Error("No file founded!")
+    } else {
+        const file = new File(req.file)
+        const path = __dirname + "/" + file.path
+        file.path = path
+        const result = await file.save()
+        return res.json(result)
+    }
+
+})
+app.get('/files/:id', async (req, res) => {
+    const id = req.params.id
+    const file = await File.findById(id)
+    console.log(file.path)
+    return res.sendFile(file.path)
+})
 app.use(errorHandle)
+
+
 
 const server = https.createServer({ key, cert }, app);
 

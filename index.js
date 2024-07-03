@@ -28,6 +28,7 @@ const passport = require('passport');
 const jwtStrategy = require('./common/strategies/jwt-strategy.js');
 const { upload } = require('./middlewares/upload.js');
 const File = require('./models/file.js');
+const fileRouter = require('./routes/file.js');
 passport.use(jwtStrategy)
 
 app.use(parser.json())
@@ -42,19 +43,7 @@ app.use('/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)
 
-app.post('/uploads', upload, async (req, res) => {
-    console.log(req.file)
-    if (req.file == undefined) {
-        throw new Error("No file founded!")
-    } else {
-        const file = new File(req.file)
-        const path = __dirname + "/" + file.path
-        file.path = path
-        const result = await file.save()
-        return res.json(result)
-    }
-
-})
+app.use('/uploads', fileRouter)
 app.get('/files/:id', async (req, res) => {
     const id = req.params.id
     const file = await File.findById(id)

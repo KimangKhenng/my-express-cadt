@@ -43,13 +43,13 @@ app.use('/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)
 
-app.use('/uploads', fileRouter)
-app.get('/files/:id', async (req, res) => {
-    const id = req.params.id
-    const file = await File.findById(id)
-    console.log(file.path)
-    return res.sendFile(file.path)
-})
+app.use('/files', fileRouter)
+// app.get('/files/:id', async (req, res) => {
+//     const id = req.params.id
+//     const file = await File.findById(id)
+//     console.log(file.path)
+//     return res.sendFile(file.path)
+// })
 app.use(errorHandle)
 
 

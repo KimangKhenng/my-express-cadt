@@ -2,18 +2,33 @@ const { books } = require('../db/db.js')
 const Book = require('../models/book.js')
 const asyncHandler = require("express-async-handler")
 
+const redis = require('redis')
+const client = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:6379`
+})
+
+client.on('error', (err) => {
+    console.error('Redis error:', err)
+}).on('connect', () => console.log('Conneted to Redis server!')).connect()
+
 const getBook = asyncHandler(async (req, res) => {
     const bookId = req.params.id
     const book = await Book.findById(id)
     res.json(book)
 })
 
-const getBooks = async (req, res) => {
-    // req.user
-    // req.users.roles
-    const books = await Book.aggregate().unwind('authors')
+const getBooks = asyncHandler(async (req, res) => {
+    const books = await Book.find()
+    const { baseUrl } = req
+    const data = await client.get(baseUrl)
+    if (data == null) {
+        // Save to cache server
+        client.set(baseUrl, JSON.stringify(books), {
+            EX: 60
+        })
+    }
     return res.json({ books })
-}
+})
 
 const createBook = (req, res) => {
     const { title, author, page } = req.body

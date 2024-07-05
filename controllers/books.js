@@ -12,35 +12,25 @@ client.on('error', (err) => {
 }).on('connect', () => console.log('Conneted to Redis server!')).connect()
 
 const getBook = asyncHandler(async (req, res) => {
-    const bookId = req.params.id
+    const id = req.params.id
     const book = await Book.findById(id)
-    res.json(book)
+    return res.json(book)
 })
 
 const getBooks = asyncHandler(async (req, res) => {
-    const books = await Book.find()
+    const books = await Book.find().sort({ 'createdDate': 'desc' })
     const { baseUrl } = req
-    const data = await client.get(baseUrl)
-    if (data == null) {
-        // Save to cache server
-        client.set(baseUrl, JSON.stringify(books), {
-            EX: 60
-        })
-    }
-    return res.json({ books })
+    return res.json(books)
 })
 
-const createBook = (req, res) => {
-    const { title, author, page } = req.body
-    const book = {
-        id: Math.floor(Math.random() * 100),
-        title,
-        author,
-        page
-    }
-    books.push(book)
-    return res.json(book)
-}
+const createBook = asyncHandler(async (req, res) => {
+    const book = new Book(req.body)
+    const reuslt = await book.save()
+    // Invalidate Cache
+    const { baseUrl } = req
+    await client.del(baseUrl)
+    return res.json(reuslt)
+})
 
 const getGenreCount = asyncHandler(async (req, res) => {
     const reuslt = await Book.aggregate().group({ _id: "$genre", count: { $sum: 1 } })

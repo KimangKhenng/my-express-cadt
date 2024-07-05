@@ -29,14 +29,16 @@ const jwtStrategy = require('./common/strategies/jwt-strategy.js')
 const { upload } = require('./middlewares/upload.js')
 const File = require('./models/file.js')
 const fileRouter = require('./routes/file.js')
+const { cacheInterceptor } = require('./interceptors/index.js')
+const { cacheMiddleware } = require('./middlewares/cache.js')
 passport.use(jwtStrategy)
-
-// Redis
-
 
 app.use(parser.json())
 app.use(logger)
 app.use('/auth', authRouter)
+
+app.use(cacheInterceptor(60))
+app.use(cacheMiddleware)
 app.use('/users',
     passport.authenticate('jwt', { session: false }),
     userRoute)

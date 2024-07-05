@@ -9,15 +9,12 @@ client.on('error', (err) => {
 }).on('connect', () => console.log('Conneted to Redis server!')).connect()
 
 const cacheMiddleware = asyncHandler(async (req, res, next) => {
-    const { baseUrl } = req
-    const data = await client.get(baseUrl)
+    const { originalUrl } = req
+    const data = await client.get(originalUrl)
     if (data !== null) {
         res.json(JSON.parse(data))
     } else {
-        console.log("Null data")
         next()
     }
 })
-
-
 module.exports = { cacheMiddleware }

@@ -1,6 +1,5 @@
 const multer = require('multer')
 const path = require('path')
-const asyncHandler = require('express-async-handler')
 // Set storage engine
 const storage = multer.diskStorage({
     destination: './uploads',

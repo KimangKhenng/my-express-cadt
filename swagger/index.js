@@ -9,6 +9,20 @@ const setupSwagger = (app) => {
                 title: 'CADT API',
                 version: '1.0.0',
             },
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        in: 'header',
+                        name: 'Authorization',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                },
+                security: [{
+                    bearerAuth: []
+                }]
+            },
         },
         apis: ['./routes/*.js'],
     };

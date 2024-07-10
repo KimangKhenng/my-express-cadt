@@ -56,9 +56,10 @@ app.use('/auth', authRouter)
 app.use(cacheInterceptor(60))
 app.use(cacheMiddleware)
 app.use('/users',
-    // passport.authenticate('jwt', { session: false }),
+    passport.authenticate('jwt', { session: false }),
     userRoute)
 app.use('/books',
+    passport.authenticate('jwt', { session: false }),
     bookRouter)
 app.use('/tweets',
     passport.authenticate('jwt', { session: false }),

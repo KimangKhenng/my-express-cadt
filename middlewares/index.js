@@ -70,6 +70,7 @@ const idValidator = (req, res, next) => {
 const verifyToken = (req, res, next) => {
     // Extract token from request header from clinet
     let token = req.header("Authorization")
+    console.log(token)
     if (!token) {
         return res.status(401).json({ error: "Access denied!" })
     }

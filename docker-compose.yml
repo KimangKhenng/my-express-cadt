@@ -27,7 +27,9 @@ services:
       - redis
     scale: 3
   mongodb:
-    image: mongo:7.0.12
+    build:
+      context: .
+      dockerfile: Dockerfile-mongo
     container_name: mongodb
     ports:
       - "27017:27017"

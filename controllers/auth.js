@@ -20,7 +20,7 @@ const loginUser = asyncHandler(async (req, res) => {
     user.tweets = {}
     // Sign JWT 
     const token = signJWT(user._id, user.email)
-    return res.json({ user, token })
+    return res.json({ id: user._id, email: user.email, token })
 })
 
 const signupUser = asyncHandler(async (req, res) => {

@@ -15,7 +15,7 @@ const dbConnect = require('./db/db.js')
 dbConnect().catch((err) => { console.log(err) })
 
 // Middlewares
-const { errorHandle, logger, verifyToken, validateToken } = require('./middlewares/index.js')
+const { errorHandle, logger, verifyToken, validateToken, limiter } = require('./middlewares/index.js')
 
 // Router
 const userRoute = require('./routes/user.js')
@@ -34,25 +34,7 @@ const { cacheMiddleware } = require('./middlewares/cache.js')
 passport.use(jwtStrategy)
 
 // Rate Limit
-const { rateLimit } = require('express-rate-limit')
-const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    limit: (req, res) => {
-        if (validateToken(req)) {
-            // 30 requests per minute for logged in user
-            return 30
-        } else {
-            // 10 requests per minute for normal user
-            return 10
-        }
-    },
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-})
-
-
 app.use(limiter)
-
 
 app.use(parser.json())
 app.use(logger)

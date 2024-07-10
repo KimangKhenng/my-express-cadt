@@ -3,12 +3,38 @@ const { validationResult } = require('express-validator');
 const { getPermissionsByRoleName } = require("../roles/role");
 const Tweet = require("../models/tweet");
 const Book = require("../models/book");
-const asyncHandler = require('express-async-handler')
-const { rateLimit } = require('express-rate-limit')
 const logger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next(); // Call the next middleware function
 };
+
+// Rate Limit
+const { rateLimit } = require('express-rate-limit')
+const { RedisStore } = require('rate-limit-redis')
+const redis = require('redis')
+const client = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:6379`
+})
+client.on('error', (err) => {
+    console.error('Redis error:', err)
+}).on('connect', () => console.log('Conneted to Redis server!')).connect()
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    limit: (req, res) => {
+        if (validateToken(req)) {
+            // 30 requests per minute for logged in user
+            return 30
+        } else {
+            // 10 requests per minute for normal user
+            return 10
+        }
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers,
+    store: new RedisStore({
+        sendCommand: (...args) => client.sendCommand(args),
+    }),
+})
 
 const loginLimit = rateLimit(
     {
@@ -117,5 +143,6 @@ module.exports = {
     authroize,
     resourceControl,
     validateToken,
-    loginLimit
+    loginLimit,
+    limiter
 }

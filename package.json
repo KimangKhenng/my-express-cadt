@@ -29,6 +29,7 @@
     "multer-s3": "^3.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "rate-limit-redis": "^4.2.0",
     "redis": "^4.6.15"
   },
   "devDependencies": {

@@ -33,16 +33,30 @@ const { cacheInterceptor } = require('./interceptors/index.js')
 const { cacheMiddleware } = require('./middlewares/cache.js')
 passport.use(jwtStrategy)
 
+
+// Compression
+const compression = require('compression')
+
+// Morgan
+const morgan = require('morgan')
+
+// Helmet security
+const helmet = require('helmet')
+const { setupSwagger } = require('./swagger/index.js')
+
+setupSwagger(app)
 // Rate Limit
 app.use(limiter)
-
+app.use(helmet())
+app.use(morgan('combined'))
+app.use(compression())
 app.use(parser.json())
-app.use(logger)
+// app.use(logger)
 app.use('/auth', authRouter)
 app.use(cacheInterceptor(60))
 app.use(cacheMiddleware)
 app.use('/users',
-    passport.authenticate('jwt', { session: false }),
+    // passport.authenticate('jwt', { session: false }),
     userRoute)
 app.use('/books',
     bookRouter)

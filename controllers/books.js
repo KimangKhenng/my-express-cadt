@@ -19,7 +19,8 @@ const getBook = asyncHandler(async (req, res) => {
 
 const getBooks = asyncHandler(async (req, res) => {
     const books = await Book.find().sort({ 'createdDate': 'desc' })
-    const { baseUrl } = req
+    const { originalUrl } = req
+
     return res.json(books)
 })
 

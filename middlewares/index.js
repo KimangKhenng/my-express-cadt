@@ -3,10 +3,21 @@ const { validationResult } = require('express-validator');
 const { getPermissionsByRoleName } = require("../roles/role");
 const Tweet = require("../models/tweet");
 const Book = require("../models/book");
+const asyncHandler = require('express-async-handler')
+const { rateLimit } = require('express-rate-limit')
 const logger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next(); // Call the next middleware function
 };
+
+const loginLimit = rateLimit(
+    {
+        windowMs: 60 * 60 * 1000, // 60 minute
+        limit: 5,
+        standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+        legacyHeaders: false, // Disable the `X-RateLimit-*` headers}
+    }
+)
 
 const errorHandle = (err, req, res, next) => {
     // console.error("Error server: ", err.stack)
@@ -40,6 +51,21 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     req.user = decoded
     next()
+}
+
+const validateToken = (req) => {
+    // Extract token from request header from clinet
+    let token = req.header("Authorization")
+    if (!token) {
+        return false
+    }
+    token = token.replace("Bearer ", "")
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    if (decoded) {
+        return true
+    } else {
+        return false
+    }
 }
 
 const authroize = (permission) => {
@@ -89,5 +115,7 @@ module.exports = {
     verifyToken,
     handleValidation,
     authroize,
-    resourceControl
+    resourceControl,
+    validateToken,
+    loginLimit
 }

@@ -1,10 +1,23 @@
 version: '2'
 services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: cadt-load-balance
+    depends_on:
+      - express-cadt
+    environment:
+      - NGINX_SERVER_NAME=localhost
+      - EXPRESS_HOST_1=my-express-cadt-express-cadt-1
+      - EXPRESS_HOST_2=my-express-cadt-express-cadt-2
+      - EXPRESS_HOST_3=my-express-cadt-express-cadt-3
+      - EXPRESS_PORT=4000
+      - NGINX_MAX_BODY=100M
+    ports:
+      - 4000:4000
   express-cadt:
     build: .
-    container_name: express-cadt
-    ports:
-      - "4000:4000"
     volumes:
       - .:/app
       - /app/node_modules
@@ -12,6 +25,7 @@ services:
     depends_on:
       - mongodb
       - redis
+    scale: 3
   mongodb:
     image: mongo:7.0.12
     container_name: mongodb

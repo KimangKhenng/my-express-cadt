@@ -15,7 +15,7 @@ const dbConnect = require('./db/db.js')
 dbConnect().catch((err) => { console.log(err) })
 
 // Middlewares
-const { errorHandle, logger, verifyToken } = require('./middlewares/index.js')
+const { errorHandle, logger, verifyToken, validateToken } = require('./middlewares/index.js')
 
 // Router
 const userRoute = require('./routes/user.js')
@@ -33,10 +33,30 @@ const { cacheInterceptor } = require('./interceptors/index.js')
 const { cacheMiddleware } = require('./middlewares/cache.js')
 passport.use(jwtStrategy)
 
+// Rate Limit
+const { rateLimit } = require('express-rate-limit')
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    limit: (req, res) => {
+        if (validateToken(req)) {
+            // 30 requests per minute for logged in user
+            return 30
+        } else {
+            // 10 requests per minute for normal user
+            return 10
+        }
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+
+app.use(limiter)
+
+
 app.use(parser.json())
 app.use(logger)
 app.use('/auth', authRouter)
-
 app.use(cacheInterceptor(60))
 app.use(cacheMiddleware)
 app.use('/users',
@@ -59,12 +79,12 @@ app.use(errorHandle)
 
 
 
-const server = https.createServer({ key, cert }, app)
+// const server = https.createServer({ key, cert }, app)
 
-server.listen(4000, () => {
-    console.log('Listening on port 4000!')
-})
-
-// app.listen(4000, () => {
+// server.listen(4000, () => {
 //     console.log('Listening on port 4000!')
 // })
+
+app.listen(4000, () => {
+    console.log('Listening on port 4000!')
+})

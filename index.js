@@ -5,6 +5,7 @@ const app = express()
 const https = require("https")
 const fs = require('fs')
 const parser = require('body-parser')
+const cors = require('cors')
 
 //Certificate
 const key = fs.readFileSync("localhost-key.pem", "utf-8")
@@ -45,6 +46,7 @@ const helmet = require('helmet')
 const { setupSwagger } = require('./swagger/index.js')
 const path = require('path')
 
+app.use(cors())
 setupSwagger(app)
 app.use(express.static(path.join(__dirname, 'frontend/dist')))
 // Rate Limit
@@ -60,10 +62,10 @@ app.use(cacheMiddleware)
 app.use('/api/v1/users',
     passport.authenticate('jwt', { session: false }),
     userRoute)
-app.use('/api/v1/books',
-    passport.authenticate('jwt', { session: false }),
-    bookRouter)
-// app.use('/books', bookRouter)
+// app.use('/api/v1/books',
+//     passport.authenticate('jwt', { session: false }),
+//     bookRouter)
+app.use('/api/v1/books', bookRouter)
 app.use('/api/v1/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)

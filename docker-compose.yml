@@ -20,6 +20,8 @@ services:
     build: .
     volumes:
       - .:/app
+      - ./frontend/dist:/app/frontend/dist
+      - ./frontend/node_modules:/app/frontend/node_modules
       - /app/node_modules
       - ./uploads:/app/uploads
     depends_on:

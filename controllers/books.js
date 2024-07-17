@@ -20,12 +20,13 @@ const getBook = asyncHandler(async (req, res) => {
 const getBooks = asyncHandler(async (req, res) => {
     const books = await Book.find().sort({ 'createdDate': 'desc' })
     const { originalUrl } = req
-
     return res.json(books)
 })
 
 const createBook = asyncHandler(async (req, res) => {
+    console.log(req.body)
     const book = new Book(req.body)
+    console.log(book)
     const reuslt = await book.save()
     // Invalidate Cache
     const { baseUrl } = req

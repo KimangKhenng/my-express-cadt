@@ -68,6 +68,6 @@ bookRouter.get('/', getBooks);
  *       200:
  *         description: Return a created book
  */
-bookRouter.post('/', authroize('create_record'), createBook);
-
+// bookRouter.post('/', authroize('create_record'), createBook)
+bookRouter.post('/', createBook)
 module.exports = bookRouter;

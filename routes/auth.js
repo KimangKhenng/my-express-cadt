@@ -33,7 +33,7 @@ const authRouter = express.Router()
  *       200:
  *         description: Return a created book
  */
-authRouter.post('/login', loginLimit, loginSchema, handleValidation, loginUser)
+authRouter.post('/login', loginSchema, handleValidation, loginUser)
 authRouter.post('/sign-up', createUserSchema, handleValidation, signupUser)
 authRouter.get('/show-google-oauth', showGoogleOAuthScreen)
 authRouter.get('/google-callback', handleGoogleLogin)

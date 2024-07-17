@@ -1,0 +1,99 @@
+version: "1.1"
+name: Book Routes Test
+env:
+  host: localhost:4000
+config:
+ loadTest:
+  phases:
+    - duration: 10
+      arrivalRate: 1
+tests:
+  get-books:
+    name: Book test
+    steps:
+      - name: Login
+        http:
+          url: http://${{env.host}}/auth/login
+          method: POST
+          check: 
+            status: 200
+          json:
+            email: "Nelle44@gmail.com"
+            password: "12345678"
+          captures:
+            token: 
+              jsonpath: $.token
+      - name: Get all books
+        http:
+          url: http://${{env.host}}/books
+          method: GET
+          auth:
+            bearer:
+              token: ${{captures.token}}
+          check:
+            status: 200
+  create-books:
+    name: Book test
+    steps:
+      - name: Login
+        http:
+          url: http://${{env.host}}/auth/login
+          method: POST
+          check: 
+            status: 200
+          json:
+            email: "Nelle44@gmail.com"
+            password: "12345678"
+          captures:
+            token: 
+              jsonpath: $.token
+      - name: Create book
+        http:
+          url: http://${{env.host}}/books
+          method: POST
+          auth:
+            bearer:
+              token: ${{captures.token}}
+          json:
+            title: ${{ person.jobTitle | fake }}
+            page: ${{ number.int | fake }}
+            description: ${{ lorem.paragraph | fake }}
+            genre: ${{ music.genre | fake }}
+          check:
+            status: 200
+          headers:
+            Content-Type: application/json
+  create-invalid-books:
+    name: Invalid Book test
+    steps:
+      - name: Login
+        http:
+          url: http://${{env.host}}/auth/login
+          method: POST
+          check: 
+            status: 200
+          json:
+            email: "Nelle44@gmail.com"
+            password: "12345678"
+          captures:
+            token: 
+              jsonpath: $.token
+      - name: Create book
+        http:
+          url: http://${{env.host}}/books
+          method: POST
+          auth:
+            bearer:
+              token: ${{captures.token}}
+          json:
+            title: ${{ | naughtystring }}
+            page: ${{ | naughtystring }}
+            description: ${{ | naughtystring }}
+            genre: ${{ | naughtystring }}
+          check:
+            status: /^50/
+          headers:
+            Content-Type: application/json
+        
+        
+      

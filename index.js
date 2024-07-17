@@ -61,6 +61,7 @@ app.use('/users',
 app.use('/books',
     passport.authenticate('jwt', { session: false }),
     bookRouter)
+// app.use('/books', bookRouter)
 app.use('/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)

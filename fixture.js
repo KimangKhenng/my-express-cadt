@@ -6,9 +6,9 @@ const { faker } = require('@faker-js/faker')
 const bcrypt = require("bcrypt")
 dbConnect().catch((err) => { console.log(err) })
 
-const numUser = 10
-const numTweet = 1000
-const numBooks = 1000
+const numUser = 1
+const numTweet = 10
+const numBooks = 1
 // Generate fake data
 // faker.js
 

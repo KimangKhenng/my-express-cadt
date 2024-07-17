@@ -23,10 +23,10 @@ const limiter = rateLimit({
     limit: (req, res) => {
         if (validateToken(req)) {
             // 30 requests per minute for logged in user
-            return 30
+            return 300
         } else {
             // 10 requests per minute for normal user
-            return 10
+            return 100
         }
     },
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers

@@ -43,8 +43,10 @@ const morgan = require('morgan')
 // Helmet security
 const helmet = require('helmet')
 const { setupSwagger } = require('./swagger/index.js')
+const path = require('path')
 
 setupSwagger(app)
+app.use(express.static(path.join(__dirname, 'frontend/dist')))
 // Rate Limit
 app.use(limiter)
 app.use(helmet())
@@ -52,21 +54,21 @@ app.use(morgan('combined'))
 app.use(compression())
 app.use(parser.json())
 // app.use(logger)
-app.use('/auth', authRouter)
+app.use('/api/auth', authRouter)
 app.use(cacheInterceptor(60))
 app.use(cacheMiddleware)
-app.use('/users',
+app.use('/api/v1/users',
     passport.authenticate('jwt', { session: false }),
     userRoute)
-app.use('/books',
+app.use('/api/v1/books',
     passport.authenticate('jwt', { session: false }),
     bookRouter)
 // app.use('/books', bookRouter)
-app.use('/tweets',
+app.use('/api/v1/tweets',
     passport.authenticate('jwt', { session: false }),
     tweetRouter)
 
-app.use('/files', fileRouter)
+app.use('/api/v1/files', fileRouter)
 // app.get('/files/:id', async (req, res) => {
 //     const id = req.params.id
 //     const file = await File.findById(id)
@@ -76,7 +78,9 @@ app.use('/files', fileRouter)
 app.use(errorHandle)
 
 
-
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/dist'))
+})
 // const server = https.createServer({ key, cert }, app)
 
 // server.listen(4000, () => {
